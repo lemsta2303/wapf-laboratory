@@ -160,7 +160,11 @@ let example = { Label = 1; Pixels = [| 1; 2; 3; |] }
 
  
 // [ YOUR CODE GOES HERE! ]
- 
+type NumberRecord = { Label: int; Pixels: int[] }
+
+let trainingDataRecords: NumberRecord array = Array.map(fun (row: int array) -> { Label = row.[0]; Pixels = row.[ 1 .. ]}) convertedTrainingData
+let validationDataRecords: NumberRecord array = Array.map(fun (row: int array) -> { Label = row.[0]; Pixels = row.[ 1 .. ]}) convertedValidationData
+
 // 5.1 VISUALISING THE DATA
 
 // You can visualise the data for an observation using
@@ -173,6 +177,9 @@ let example = { Label = 1; Pixels = [| 1; 2; 3; |] }
 // prettyPrint example.Pixels
 
 // [ YOUR CODE GOES HERE! ]
+#load "Helper.fsx"
+trainingDataRecords[1].Pixels |> prettyPrint
+prettyPrint trainingDataRecords[10].Pixels
 
 // 6. COMPUTING DISTANCES
 
