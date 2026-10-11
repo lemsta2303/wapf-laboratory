@@ -252,15 +252,14 @@ let functionWithClosure (x: int) =
  
 // [ YOUR CODE GOES HERE! ]
 type DistanceType = { Label: int; DistanceValue: float }
-let classify (unknownElement:int[]) =
+let classify (unknownElement:int[], k: int) =
     Array.map(fun (row: NumberRecord) -> {Label = row.Label; DistanceValue = euclideanDistance row.Pixels unknownElement}) trainingDataRecords
-    |> Array.minBy(fun d -> d.DistanceValue)
-    |> fun closest -> closest.Label
+    |> Array.sortBy(fun d -> d.DistanceValue)
+    |> fun arr -> arr[ .. k-1]
+    |> Array.countBy(fun el -> el.Label)
+    |> Array.maxBy(fun (label, count) -> count)
+    |> fun (label, count) -> label
 
-let idx = 12
-prettyPrint validationDataRecords[idx].Pixels 
-validationDataRecords.[idx].Pixels |> classify
- 
  
 // 8. EVALUATING THE MODEL AGAINST VALIDATION DATA
  
@@ -276,11 +275,23 @@ validationDataRecords.[idx].Pixels |> classify
 // and compute the % correctly predicted.
  
 // [ YOUR CODE GOES HERE! ]
-let evaluate =  
-    validationDataRecords |> Array.map(fun record -> classify record.Pixels = record.Label)
+let evaluate k  =  
+    validationDataRecords |> Array.map(fun record -> classify (record.Pixels, k) = record.Label)
     |> Array.filter id
     |> Array.length
     |> fun correct -> float correct / float validationDataRecords.Length * 100.0
 
-printfn "Accuracy: %.2f%%" evaluate
+for k in [1; 2; 3; 5; 10; 50] do
+    printfn "Accuracy for k==%d: %.2f%%" k (evaluate k)
 
+///////podsumowanie
+/// Stanisław Lemański 193333
+/// 
+/// Wykonałem zadanie z klasyfikatorem paremtryzowanym.
+/// Wyniki dla poszczególnych k przy użyciu odległości euklidesowej: (wypisują się również na ekranie po uruchomieniu)
+/// Accuracy for k==1: 94.40%
+/// Accuracy for k==2: 94.40%
+/// Accuracy for k==3: 94.00%
+/// Accuracy for k==5: 93.20%
+/// Accuracy for k==10: 93.60%
+/// Accuracy for k==50: 88.60%
