@@ -102,7 +102,8 @@ let splitResult = csvToSplit.Split(',')
  
  
 // [ YOUR CODE GOES HERE! ]
- 
+let splitTrainingData: string array array = Array.map(fun (s:string) -> s.Split(',')) trainingData
+let splitValidationData: string array array = validationData |> Array.map(fun s -> s.Split(',') )
  
 // 3. CLEANING UP HEADERS
  
@@ -121,6 +122,8 @@ let upToThree = someNumbers.[ .. 2 ]
 
 
 // [ YOUR CODE GOES HERE! ]
+let traininngDataWithoutHeaders: string array array = splitTrainingData.[ 1 .. ]
+let validationDataWithoutHeaders: string array array = splitValidationData.[ 1 .. ]
  
  
 // 4. CONVERTING FROM STRINGS TO INTS
@@ -137,7 +140,10 @@ let convertedInt = Convert.ToInt32("42")
  
  
 // [ YOUR CODE GOES HERE! ]
- 
+let convertedTrainingData: int array array =  
+    traininngDataWithoutHeaders |> Array.map(fun (row: string array) -> row |> Array.map(fun (s: string) -> (int) s))
+let convertedValidationData: int array array =
+    Array.map(fun (row: string array) -> Array.map(fun (s: string) -> (int) s) row ) validationDataWithoutHeaders
  
 // 5. CONVERTING ARRAYS TO RECORDS
  
