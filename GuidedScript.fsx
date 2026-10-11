@@ -275,5 +275,12 @@ validationDataRecords.[idx].Pixels |> classify
 // whether your classifier returns the correct answer,
 // and compute the % correctly predicted.
  
- 
 // [ YOUR CODE GOES HERE! ]
+let evaluate =  
+    validationDataRecords |> Array.map(fun record -> classify record.Pixels = record.Label)
+    |> Array.filter id
+    |> Array.length
+    |> fun correct -> float correct / float validationDataRecords.Length * 100.0
+
+printfn "Accuracy: %.2f%%" evaluate
+
