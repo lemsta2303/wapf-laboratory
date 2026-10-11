@@ -210,6 +210,11 @@ let distance (p1: int[]) (p2: int[]) = 42
 // 42 is likely not the right answer
  
 // [ YOUR CODE GOES HERE! ]
+let euclideanDistance (p1: int array) (p2: int array) = 
+    Array.map2(fun (n1: int) (n2: int) -> (n1-n2)*(n1-n2)) p1 p2
+    |> Array.sum
+    |> float
+    |> sqrt
  
  
 // 7. WRITING THE CLASSIFIER FUNCTION
@@ -245,20 +250,16 @@ let functionWithClosure (x: int) =
     else false
 // </F# QUICK-STARTER>  
  
-
- // The classifier function should probably
-// look like this - except that this one will
-// classify everything as a 0:
-let classify (unknown:int[]) =
-    // do something smart here
-    // like find the Example with
-    // the shortest distance to
-    // the unknown element...
-    // and use the training examples
-    // in a closure...
-    0 
- 
 // [ YOUR CODE GOES HERE! ]
+type DistanceType = { Label: int; DistanceValue: float }
+let classify (unknownElement:int[]) =
+    Array.map(fun (row: NumberRecord) -> {Label = row.Label; DistanceValue = euclideanDistance row.Pixels unknownElement}) trainingDataRecords
+    |> Array.minBy(fun d -> d.DistanceValue)
+    |> fun closest -> closest.Label
+
+let idx = 12
+prettyPrint validationDataRecords[idx].Pixels 
+validationDataRecords.[idx].Pixels |> classify
  
  
 // 8. EVALUATING THE MODEL AGAINST VALIDATION DATA
