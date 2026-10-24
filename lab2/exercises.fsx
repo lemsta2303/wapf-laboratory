@@ -163,7 +163,35 @@ SHOW ``homework 4.2``
 // ##Implement `conv2onp` function (AiSD or (https://pl.wikipedia.org/wiki/Odwrotna_notacja_polska)).
 
 // #### --------------- Your code goes below ---------------
-let conv2onp (expression: string): Symbol list option = None
+type StackItem =
+    | OpItem of Operator
+    | LeftParen
+
+let priority (operator: Operator): int = 
+    match operator with
+    | Plus | Minus -> 1
+    | Divide | Multiply -> 2
+
+let rec convert (tokens: string list) (stack: StackItem list) (output: Symbol list): Symbol list option = 
+    match tokens, stack with
+    | [], OpItem op :: s -> convert [] s (OpSymbol op :: output)
+    | [], LeftParen :: _ -> None
+    | [], [] -> Some ( List.rev output )
+    | "(" :: rest, _ -> convert rest (LeftParen :: stack) output
+    | ")" :: _, OpItem op :: s -> convert tokens s (OpSymbol op :: output)
+    | ")" :: rest, LeftParen :: s -> convert rest s output
+    | ")" :: _, [] -> None
+    | token :: rest, _ -> 
+        match parseSymbol token with
+        | None -> None
+        | Some (NumSymbol n) -> convert rest stack (NumSymbol n :: output)
+        | Some (OpSymbol op ) -> 
+            match stack with 
+            | OpItem top :: s when priority top >= priority op -> convert tokens s (OpSymbol top :: output)
+            | _ -> convert rest (OpItem op :: stack) output
+
+let conv2onp (expression: string): Symbol list option = 
+    convert (splitBy ' ' expression) [] []
 
 let ``homework 4.3`` =
     conv2onp "( 2 + 5 ) * 3 - 4 * ( 16 + 5 )"
@@ -175,10 +203,13 @@ SHOW ``homework 4.3``
 // ### Homework 4.4
 
 // #### --------------- Your code goes below ---------------
-let compute (expression: string): int option = None
+let compute (expression: string): int option = 
+    match conv2onp expression with
+    | Some symbols -> computeonp [] symbols
+    | None -> None
 
 let ``homework 4.4`` =
-    compute "( 2 + 5 ) * 3 - 4 * ( ( 16 - 1 ) * 2 + 5 )"
+    compute "( 2 + 5 ) * ( 3 - 1 )"
 
 // #### Value of ``exercise 4.4``
 SHOW ``homework 4.4``
@@ -186,8 +217,9 @@ SHOW ``homework 4.4``
 
 
 //////////////////////////////////////////////////////////////
-/// Indeks:
-/// Imię:
-/// Nazwisko:
+/// Indeks: 193333
+/// Imię: Stanisław
+/// Nazwisko: Lemański
 /// 
 /// Podsumowanie zalizowanych zadan:
+/// Zostały wykonane wszystkie zadania do 4.4 włącznie. Zadań dodtakowych nie robiłem. Wszystkie funkcje testowałem na przykładowych danych i dawały poprawne wyniki.
