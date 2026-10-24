@@ -217,9 +217,7 @@ type Meal =
     | FastFood of string
 
 let ``example 3.1`` =
-    [ Sandwich
-      FastFood "Bar Żuławski"
-      Fruit Apple ]
+    [ Sandwich; FastFood "Bar Żuławski"; Fruit Apple ]
 
 // #### Value of ``example 3.1``
 // # include-value: ``example 3.1``
